@@ -1,6 +1,6 @@
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { ArrowRight, Star, Users, Github, Music } from "lucide-react";
+import { ArrowRight, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Welcome() {
@@ -129,6 +129,24 @@ function Footer() {
         <footer className="bg-muted/30 border-t border-border py-6 mt-20">
             <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
                 <p>Built by Shmiklak with love. ❤️</p>
+                <div className="flex gap-4">
+                    <a
+                        href="https://github.com/Shmiklak/NomiNation"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-pink-500 transition-colors flex items-center gap-1"
+                    >
+                        GitHub
+                    </a>
+                    <a
+                        href="https://discord.gg/rkXpNxpHb2"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-pink-500 transition-colors flex items-center gap-1"
+                    >
+                        Discord Server
+                    </a>
+                </div>
             </div>
         </footer>
     );
