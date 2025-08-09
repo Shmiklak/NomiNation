@@ -17,6 +17,7 @@ class QueuesController extends Controller
                 ->orderByRaw('CASE WHEN id = 1 THEN 0 ELSE 1 END')
                 ->orderBy('status', 'asc')
                 ->orderByRaw('CASE WHEN type = "subdivision" THEN 0 ELSE 1 END')
+                ->orderByRaw('CASE WHEN is_bn_queue = 1 THEN 0 ELSE 1 END')
                 ->orderBy('name', 'asc')
                 ->with('user')->get()
         ]);

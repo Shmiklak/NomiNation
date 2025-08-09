@@ -51,6 +51,7 @@ export interface Queue {
     user: User;
     user_id: number;
     members: User[];
+    is_bn_queue: boolean;
     [key: string]: unknown; // This allows for additional properties...
 }
 

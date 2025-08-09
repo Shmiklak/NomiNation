@@ -14,6 +14,7 @@ type QueueCardProps = {
     description: string;
     status: string;
     id: number;
+    is_bn_queue: boolean;
     host: {
         name: string;
         avatarUrl: string;
@@ -22,14 +23,11 @@ type QueueCardProps = {
     };
 };
 
-export function QueueListItem({ imageUrl, title, description, status, id, host }: QueueCardProps) {
+export function QueueListItem({ imageUrl, title, description, status, id, is_bn_queue, host }: QueueCardProps) {
 
     const { auth } = usePage<SharedData>().props;
 
-    const statusColor =
-        status === "open"
-            ? "default"
-            : "destructive";
+    const statusColor = status === "open" ? "default" : "destructive";
 
     return (
         <Card className="overflow-hidden rounded-2xl bg-white/5 border ">
@@ -47,6 +45,9 @@ export function QueueListItem({ imageUrl, title, description, status, id, host }
                         <Link href={route('queue', id)}>{title}</Link>
                     </CardTitle>
                     <Badge variant={statusColor}>{status}</Badge>
+                    {is_bn_queue ? (
+                        <Badge className="ml-1 bg-purple-600 text-white hover:bg-purple-700">Beatmap Nominators</Badge>
+                    ) : (<></>)}
                 </div>
             </CardHeader>
 

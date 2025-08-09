@@ -31,6 +31,7 @@ return new class extends Migration
                 Queue::QUEUE_TYPE_SUBDIVISION,
             ])->default(Queue::QUEUE_TYPE_SUBDIVISION);
             $table->integer('not_interested_requirement')->default(3);
+            $table->boolean('is_bn_queue')->default(false);
             $table->timestamps();
         });
     }

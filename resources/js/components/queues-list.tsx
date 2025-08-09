@@ -25,6 +25,7 @@ export const QueuesList = ({ queues } : { queues: Queue[] }) => {
                                    description={queue.short_description}
                                    status={queue.status}
                                    id={queue.id}
+                                   is_bn_queue={queue.is_bn_queue}
                                    host={{
                                        id: queue.user.id,
                                        osu_id: queue.user.osu_id,
