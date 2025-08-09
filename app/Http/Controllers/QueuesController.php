@@ -137,11 +137,16 @@ class QueuesController extends Controller
             abort(404);
         }
 
-        $query = $queue->beatmaps()->where('is_ranked', false)->whereNotIn('status', ['INVALID', 'HIDDEN'])->whereDoesntHave('responses', function($q) {
-            $q->where('nominator_id', auth()->user()->id)->where('status', 'UNINTERESTED');
-        })->orderBy('created_at', 'desc')->with('responses')->with('responses.nominator');
+        if ($request->filled('status') && $request->input('status') !== 'Any') {
+            $query = $queue->beatmaps()->where('is_ranked', false)->where('status', $request->input('status'))
+                ->orderBy('created_at', 'desc')->with('responses')->with('responses.nominator');
+        } else {
+            $query = $queue->beatmaps()->where('is_ranked', false)->whereNotIn('status', ['INVALID', 'HIDDEN'])->whereDoesntHave('responses', function($q) {
+                $q->where('nominator_id', auth()->user()->id)->where('status', 'UNINTERESTED');
+            })->orderBy('created_at', 'desc')->with('responses')->with('responses.nominator');
+        }
 
-        $filters = ['genre', 'language', 'status'];
+        $filters = ['genre', 'language'];
         foreach ($filters as $field) {
             if ($request->filled($field) && $request->input($field) !== 'Any' ) {
                 $query->where($field, $request->input($field));
