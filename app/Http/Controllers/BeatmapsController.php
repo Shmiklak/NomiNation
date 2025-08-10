@@ -46,6 +46,13 @@ class BeatmapsController extends Controller
         }
 
         $parsed_url = parse_url($request->get('beatmap_link'));
+
+        if (explode('/', $parsed_url['path'])[1] != 'beatmapsets') {
+            throw ValidationException::withMessages([
+                'beatmap_link' => "Incorrect link. Please make sure to use the link from the current osu! website."
+            ]);
+        }
+
         $beatmap_id = explode('/', $parsed_url['path'])[2];
 
         if (Beatmap::where('beatmapset_id', $beatmap_id)->where('queue_id', $queue->id)->exists()) {
