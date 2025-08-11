@@ -71,7 +71,7 @@ class OsuApi {
                 'form_params' => [
                     'client_id' => config('services.osu.client_id'),
                     'client_secret' => config('services.osu.client_secret'),
-                    'grant_type' => 'client_credentials',
+                    'grant_type' => 'refresh_token',
                     'refresh_token' => Session::get('osu_refresh_token'),
                 ]
             ]);
