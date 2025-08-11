@@ -74,8 +74,8 @@ export default function SubmitRequest({ queue } : { queue: Queue }) {
                             <a href={route('osu_login')}>Login to send request</a>
                         </Button>
                     )}
-                    <DialogContent className="max-w-fit overflow-y-auto max-h-5/6">
-                        <DialogHeader>
+                    <DialogContent className="w-[clamp(320px,95vw,720px)] sm:max-w-lg max-h-[85vh] overflow-y-auto">
+                        <DialogHeader className="text-left">
                             <DialogTitle>Submit request</DialogTitle>
 
                             <div className="mt-5 markdown">
