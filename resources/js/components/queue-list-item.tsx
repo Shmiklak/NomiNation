@@ -35,7 +35,7 @@ export function QueueListItem({ imageUrl, title, description, status, id, is_bn_
                 <img
                     src={imageUrl === null ? host.avatarUrl : imageUrl}
                     alt={title}
-                    className="h-48 rounded-2xl mx-auto"
+                    className="h-48 rounded-2xl mx-auto object-contain"
                 />
             </div>
 
