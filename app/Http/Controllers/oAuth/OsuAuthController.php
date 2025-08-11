@@ -16,6 +16,7 @@ class OsuAuthController extends Controller
 {
     public function redirectToProvider()
     {
+        session(['url.intended' => url()->previous()]);
         return Socialite::driver('osu')->redirect();
     }
 
@@ -31,7 +32,6 @@ class OsuAuthController extends Controller
                 Session::put('osu_access_token', $osu_user->token);
                 Session::put('osu_refresh_token', $osu_user->refreshToken);
                 Auth::login($user);
-                return redirect('/dashboard');
             } else {
                 $new_user = User::create([
                     'osu_id' => $osu_user->getId(),
@@ -40,8 +40,8 @@ class OsuAuthController extends Controller
                 Session::put('osu_access_token', $osu_user->token);
                 Session::put('osu_refresh_token', $osu_user->refreshToken);
                 Auth::login($new_user);
-                return redirect('/dashboard');
             }
+            return redirect()->intended(route('dashboard'));
         }
         catch (InvalidStateException $exception) {
             dd('osu! threw an error. Please try again or contact Shmiklak for help');

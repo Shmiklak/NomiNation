@@ -68,7 +68,7 @@ export function QueueListItem({ imageUrl, title, description, status, id, is_bn_
             </CardContent>
 
             <CardFooter>
-                { auth.user.id === host.id ? (
+                { auth.user && auth.user.id === host.id ? (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
