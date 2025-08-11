@@ -23,23 +23,28 @@ class OsuApi {
         ];
 
         try {
-            $res = $this->client->request('GET', $this->baseUrl. $url, [
+            $res = $this->client->request('GET', $this->baseUrl . $url, [
                 'headers' => $headers
             ]);
         } catch (GuzzleException $e) {
             if ($e->getCode() == 401) {
+                // Token expired → refresh it and retry once
                 $this->refreshToken();
-                $this->get($url, $data);
+
+                $res = $this->client->request('GET', $this->baseUrl . $url, [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . Session::get('osu_access_token'),
+                        'Accept-Language' => 'en'
+                    ]
+                ]);
+            } else {
+                throw $e; // for other errors
             }
         }
 
-        try {
-            $response = json_decode($res->getBody()->getContents(), true);
-        } catch (\Exception $e) {
-            dd('Your token may have expired. Try logging in again.');
-        }
-
-        return $response;
+        return json_decode($res->getBody()->getContents(), true);
     }
 
     private function delete($url, $data = []) {
