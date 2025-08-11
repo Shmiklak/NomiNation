@@ -30,12 +30,12 @@ export function QueueListItem({ imageUrl, title, description, status, id, is_bn_
     const statusColor = status === "open" ? "default" : "destructive";
 
     return (
-        <Card className="overflow-hidden rounded-2xl bg-white/5 border">
+        <Card className="overflow-hidden rounded-2xl bg-white/5 border ">
             <div className="px-3 py-3">
                 <img
                     src={imageUrl === null ? host.avatarUrl : imageUrl}
                     alt={title}
-                    className="rounded-2xl object-contain"
+                    className="h-48 rounded-2xl mx-auto"
                 />
             </div>
 
