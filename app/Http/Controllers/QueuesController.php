@@ -129,7 +129,8 @@ class QueuesController extends Controller
         return redirect()->route('queue', $queue->id)->with('message', 'Queue has been updated.');
     }
 
-    public function show(Request $request, $id) {
+    public function show(Request $request, $id)
+    {
         $queue = Queue::with('user')->with('members')->findOrFail($id);
 
         $isMember = auth()->check() && $queue->members()->where('user_id', auth()->id())->exists();
@@ -139,24 +140,35 @@ class QueuesController extends Controller
             abort(404);
         }
 
-        $query = $queue->beatmaps()->where('is_ranked', false);
+        $query = $queue->beatmaps()
+            ->where('is_ranked', false)
+            ->orderBy('created_at', 'desc')
+            ->with('responses')
+            ->with('responses.nominator');
 
         if ($request->filled('status') && $request->input('status') !== 'Any') {
             $query->where('status', $request->input('status'));
         } else {
             if (auth()->check()) {
                 $query->whereNotIn('status', ['INVALID', 'HIDDEN'])
-                    ->whereDoesntHave('responses', function($q) {
-                        $q->where('nominator_id', auth()->id())->where('status', 'UNINTERESTED');
+                    ->whereDoesntHave('responses', function ($q) {
+                        $q->where('nominator_id', auth()->id())
+                            ->where('status', 'UNINTERESTED');
                     });
             } else {
                 $query->whereNotIn('status', ['INVALID', 'HIDDEN']);
             }
         }
 
+        $filters = ['genre', 'language'];
+        foreach ($filters as $field) {
+            if ($request->filled($field) && $request->input($field) !== 'Any') {
+                $query->where($field, $request->input($field));
+            }
+        }
+
         if ($request->filled('query')) {
             $searchTerms = preg_split('/\s+/', trim($request->input('query')));
-
             $query->where(function ($subQuery) use ($searchTerms) {
                 foreach ($searchTerms as $term) {
                     $subQuery->where(function ($q) use ($term) {
@@ -175,6 +187,7 @@ class QueuesController extends Controller
             'beatmaps' => $beatmaps
         ]);
     }
+
 
     public function manageMembers(Request $request, $id) {
         $queue = Queue::findOrFail($id);
