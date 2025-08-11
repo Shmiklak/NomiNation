@@ -38,6 +38,6 @@ return [
     'osu' => [
         'client_id' => env('OSU_CLIENT_ID'),
         'client_secret' => env('OSU_CLIENT_SECRET'),
-        'redirect' => getenv('URL') . '/osu_login',
+        'redirect' => getenv('APP_URL') . '/osu_login',
     ]
 ];

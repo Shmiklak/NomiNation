@@ -40,16 +40,27 @@ export default function Welcome() {
                         </p>
                         <div className="mt-8 flex justify-center lg:justify-start gap-4">
                             {auth.user === null ? (
-                                <Button
-                                    asChild
-                                    size="lg"
-                                    className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 transition-all shadow-lg"
-                                >
-                                    <a href={route('osu_login')}>
-                                        Login with osu! account
-                                        <ArrowRight className="ml-2 size-4" />
-                                    </a>
-                                </Button>
+                                <div className={"flex flex-col gap-3"}>
+                                    <Button
+                                        asChild
+                                        size="lg"
+                                        className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 transition-all shadow-lg"
+                                    >
+                                        <a href={route('osu_login')}>
+                                            Login with osu! account
+                                            <ArrowRight className="ml-2 size-4" />
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        asChild
+                                        size="lg"
+                                        className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 transition-all shadow-lg"
+                                    >
+                                        <a href={route('dashboard')}>
+                                            Continue without authentication
+                                        </a>
+                                    </Button>
+                                </div>
                             ) : (
                                 <Button
                                     asChild

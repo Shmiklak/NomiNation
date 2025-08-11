@@ -20,7 +20,10 @@ export default function BeatmapWindow({ beatmap, members } : {beatmap : Beatmap,
     const { auth } = usePage<SharedData>().props;
 
     const isUserMember = () => {
-        return members.some(member => member.id === auth.user.id);
+        if (auth.user) {
+            return members.some(member => member.id === auth.user.id);
+        }
+        return null;
     }
 
     const [isOpen, setIsOpen] = useState(false);
@@ -120,7 +123,7 @@ export default function BeatmapWindow({ beatmap, members } : {beatmap : Beatmap,
 
                                     <h3 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5">Nominator responses:</h3>
 
-                                    {beatmap.responses.map((response) => (
+                                    {beatmap.responses && beatmap.responses.map((response) => (
                                         <>
                                             <div key={response.id} className="flex items-center gap-3 mt-2 mb-2">
                                                 <img

@@ -13,10 +13,11 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import Markdown from "react-markdown";
 import LinkRenderer from "@/components/link-renderer";
-import {useForm} from "@inertiajs/react";
+import {Link, useForm, usePage} from "@inertiajs/react";
 import {toast} from "sonner";
 import React, {useState} from "react";
 import {Spinner} from "@/components/ui/spinner";
+import type { SharedData } from "@/types";
 
 type RequestFormInterface = {
     beatmap_link: string,
@@ -28,6 +29,8 @@ export default function SubmitRequest({ queue } : { queue: Queue }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const [loading, setLoading] = useState(false);
+
+    const { auth } = usePage<SharedData>().props;
 
     const { data, setData, post } = useForm<RequestFormInterface>({
         beatmap_link: '',
@@ -62,9 +65,15 @@ export default function SubmitRequest({ queue } : { queue: Queue }) {
         <>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <form onSubmit={submit}>
-                    <DialogTrigger asChild>
-                        <Button>Send request</Button>
-                    </DialogTrigger>
+                    {auth.user ? (
+                        <DialogTrigger asChild>
+                            <Button>Send request</Button>
+                        </DialogTrigger>
+                    ) : (
+                        <Button asChild>
+                            <a href={route('osu_login')}>Login to send request</a>
+                        </Button>
+                    )}
                     <DialogContent className="max-w-fit overflow-y-auto max-h-5/6">
                         <DialogHeader>
                             <DialogTitle>Submit request</DialogTitle>

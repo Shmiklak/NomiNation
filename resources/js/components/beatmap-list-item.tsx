@@ -15,7 +15,10 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
     const { auth } = usePage<SharedData>().props;
 
     const isUserMember = () => {
-        return members.some(member => member.id === auth.user.id);
+        if (auth.user) {
+            return members.some(member => member.id === auth.user.id);
+        }
+        return null;
     }
 
     const updateNominatorResponse = (status: string) => {

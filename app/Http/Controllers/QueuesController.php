@@ -132,24 +132,25 @@ class QueuesController extends Controller
     public function show(Request $request, $id) {
         $queue = Queue::with('user')->with('members')->findOrFail($id);
 
+        $isMember = auth()->check() && $queue->members()->where('user_id', auth()->id())->exists();
+
         if (($queue->status == Queue::QUEUE_HIDDEN || $queue->status == Queue::QUEUE_WAITING_FOR_APPROVAL)
-            && !$queue->members()->where('user_id', request()->user()->id)->exists()) {
+            && !$isMember) {
             abort(404);
         }
 
-        if ($request->filled('status') && $request->input('status') !== 'Any') {
-            $query = $queue->beatmaps()->where('is_ranked', false)->where('status', $request->input('status'))
-                ->orderBy('created_at', 'desc')->with('responses')->with('responses.nominator');
-        } else {
-            $query = $queue->beatmaps()->where('is_ranked', false)->whereNotIn('status', ['INVALID', 'HIDDEN'])->whereDoesntHave('responses', function($q) {
-                $q->where('nominator_id', auth()->user()->id)->where('status', 'UNINTERESTED');
-            })->orderBy('created_at', 'desc')->with('responses')->with('responses.nominator');
-        }
+        $query = $queue->beatmaps()->where('is_ranked', false);
 
-        $filters = ['genre', 'language'];
-        foreach ($filters as $field) {
-            if ($request->filled($field) && $request->input($field) !== 'Any' ) {
-                $query->where($field, $request->input($field));
+        if ($request->filled('status') && $request->input('status') !== 'Any') {
+            $query->where('status', $request->input('status'));
+        } else {
+            if (auth()->check()) {
+                $query->whereNotIn('status', ['INVALID', 'HIDDEN'])
+                    ->whereDoesntHave('responses', function($q) {
+                        $q->where('nominator_id', auth()->id())->where('status', 'UNINTERESTED');
+                    });
+            } else {
+                $query->whereNotIn('status', ['INVALID', 'HIDDEN']);
             }
         }
 
@@ -170,7 +171,7 @@ class QueuesController extends Controller
         $beatmaps = $query->paginate(16)->withQueryString();
 
         return Inertia::render('queues/show', [
-           'queue' => $queue,
+            'queue' => $queue,
             'beatmaps' => $beatmaps
         ]);
     }

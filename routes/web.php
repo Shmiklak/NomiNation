@@ -10,12 +10,13 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('dashboard', [QueuesController::class, 'index'])->name('dashboard');
+Route::get('queue/{id}', [QueuesController::class, 'show'])->name('queue');
+Route::get('queue/{id}/members', [QueuesController::class, 'members'])->name('queue.members');
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', [QueuesController::class, 'index'])->name('dashboard');
     Route::get('my-queues', [QueuesController::class, 'myQueues'])->name('my-queues');
-    Route::get('queue/{id}', [QueuesController::class, 'show'])->name('queue');
 //    Route::post('queue/{id}', [QueuesController::class, 'test'])->name('queue');
-    Route::get('queue/{id}/members', [QueuesController::class, 'members'])->name('queue.members');
 
 
     Route::match(['get', 'post'], 'create-queue', [QueuesController::class, 'create'])->name('create-queue');
