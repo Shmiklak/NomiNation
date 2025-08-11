@@ -117,7 +117,7 @@ function Header() {
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <a href="/" className="flex items-center gap-2 font-bold text-lg">
-                    <img src="/static/images/logo.jpg" alt="NomiNation logo" className="h-8 w-8" />
+                    <img src="/static/images/logo.jpg" alt="NomiNation logo" className="h-8 w-8 rounded-md" />
                     NomiNation
                 </a>
                 {/* Donate button */}
