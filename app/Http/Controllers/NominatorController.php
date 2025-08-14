@@ -46,7 +46,13 @@ class NominatorController extends Controller
 
         $response->save();
         $beatmap->updateStatus();
-        Discord::sendResponseUpdate($response, $beatmap->queue->discord_webhook);
+
+
+        try {
+            Discord::sendResponseUpdate($response, $beatmap->queue->discord_webhook);
+        } catch (ValidationException $e) {
+
+        }
 
         if ($request->get('status') === 'ACCEPTED') {
             $username = str_replace(' ', '_', $beatmap->creator);
