@@ -57,7 +57,7 @@ class OsuAuthController extends Controller
             Auth::logout();
             Session::forget('osu_access_token');
             Session::forget('osu_refresh_token');
-            return redirect('/');
+            return redirect()->intended(route('dashboard'));
         }
     }
 }
