@@ -57,7 +57,8 @@ export default function Welcome() {
                                         className="bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90 transition-all shadow-lg"
                                     >
                                         <a href={route('dashboard')}>
-                                            Continue without authentication
+                                            Enter as Guest
+                                            <ArrowRight className="ml-2 size-4" />
                                         </a>
                                     </Button>
                                 </div>
