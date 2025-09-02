@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 
 class Beatmap extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'queue_id', 'request_author', 'comment', 'beatmapset_id',
         'title', 'artist', 'creator', 'cover', 'genre', 'language', 'bpm', 'is_ranked'
