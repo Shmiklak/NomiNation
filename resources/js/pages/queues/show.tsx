@@ -186,7 +186,12 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                     { queue.status != 'open' ? (<></>) : (<SubmitRequest queue={queue}/>) }
                 </div>
 
-                <BeatmapsListing members={queue.members} paginatedData={beatmaps} display_queue={false}/>
+                <BeatmapsListing
+                    members={queue.members}
+                    paginatedData={beatmaps}
+                    display_queue={false}
+                    filters={data}
+                />
             </div>
 
 
