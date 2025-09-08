@@ -30,7 +30,6 @@ return new class extends Migration
                 'ACCEPTED',
                 'NOMINATED',
                 'RANKED',
-                'MODDED',
                 'HIDDEN'
             ])->default('PENDING');
             $table->boolean('is_ranked')->default(false);
