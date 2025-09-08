@@ -37,6 +37,8 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
         switch (beatmap.status) {
             case "ACCEPTED":
             case "NOMINATED":
+            case "RANKED":
+            case "MODDED":
                 return "default";
             case "INVALID":
                 return "destructive";
@@ -140,6 +142,9 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer" onClick={() => updateNominatorResponse('NOMINATED')}>
                                     Mark as nominated
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" onClick={() => updateNominatorResponse('RANKED')}>
+                                    Mark as ranked
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

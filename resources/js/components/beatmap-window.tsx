@@ -34,6 +34,7 @@ export default function BeatmapWindow({ beatmap, members } : {beatmap : Beatmap,
         switch (beatmap.status) {
             case "ACCEPTED":
             case "NOMINATED":
+            case "RANKED":
                 return "default";
             case "INVALID":
                 return "destructive";
@@ -139,7 +140,11 @@ export default function BeatmapWindow({ beatmap, members } : {beatmap : Beatmap,
                                         </>
                                     ))}
 
-                                    {isUserMember() ? (<NominatorResponseForm beatmap={beatmap} members={members} />) : (<></>)}
+                                    {isUserMember() ? (<NominatorResponseForm
+                                        beatmap={beatmap}
+                                        members={members}
+                                        onClose={() => setIsOpen(false)}
+                                    />) : (<></>)}
                                 </div>
                             </div>
                         </div>

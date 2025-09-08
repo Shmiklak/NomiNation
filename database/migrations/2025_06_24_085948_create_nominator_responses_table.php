@@ -21,6 +21,7 @@ return new class extends Migration
                 'MODDED',
                 'RECHECKED',
                 'NOMINATED',
+                'RANKED',
                 'INVALID',
                 'UNINTERESTED'
             ])->default('ACCEPTED');

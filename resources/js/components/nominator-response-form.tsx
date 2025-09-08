@@ -8,14 +8,7 @@ import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {toast} from "sonner";
 
-// type NominatorResponseFormInterface = {
-//     nominator_id: number,
-//     beatmap_id: number,
-//     status: string,
-//     comment: string
-// }
-
-export default function NominatorResponseForm({ beatmap, members } : {beatmap : Beatmap, members: User[]}) {
+export default function NominatorResponseForm({ beatmap, members, onClose } : {beatmap : Beatmap, members: User[], onClose?: () => void}) {
 
     const { auth } = usePage<SharedData>().props;
 
@@ -24,17 +17,17 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
     const [nominator_id, setNominatorId] = useState<number>(auth.user.id);
     const [status, setStatus] = useState<string>('');
     const [comment, setComment] = useState<string>('');
-    const isUserAdmin = () => {
 
+    const isUserAdmin = () => {
         return members.some(member => member.is_admin || (member.id === auth.user.id && member.pivot.is_admin === 1));
     }
 
-    const submitResponse = () => {
+    const submitResponse = (customStatus?: string) => {
         setLoading(true);
         router.post(route('submit-response'), {
             'beatmap_id': beatmap.id,
             'nominator_id': nominator_id,
-            'status': status,
+            'status': customStatus ?? status,
             'comment': comment,
         }, {
             preserveScroll: true,
@@ -49,7 +42,9 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
 
     return (
         <>
-            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5 mb-5">Edit my response:</h3>
+            <h3 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5 mb-5">
+                Edit my response:
+            </h3>
 
             <div className="grid gap-4">
 
@@ -57,7 +52,7 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
                     <Label htmlFor="comment">Status</Label>
                     <Select onValueChange={(newValue) => setStatus(newValue)}>
                         <SelectTrigger>
-                            <SelectValue />
+                            <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="ACCEPTED">ACCEPTED</SelectItem>
@@ -72,19 +67,24 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
 
                 {isUserAdmin() ? (
                     <div className="grid gap-3 mb-2">
-                        <Label htmlFor="comment">Nominator</Label>
-                        <Select defaultValue={auth.user.id.toString()} onValueChange={(newValue) => setNominatorId(parseInt(newValue))}>
+                        <Label htmlFor="nominator">Nominator</Label>
+                        <Select
+                            defaultValue={auth.user.id.toString()}
+                            onValueChange={(newValue) => setNominatorId(parseInt(newValue))}
+                        >
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                                 {members.map((member) => (
-                                    <SelectItem value={member.id.toString()}>{member.username}</SelectItem>
+                                    <SelectItem key={member.id} value={member.id.toString()}>
+                                        {member.username}
+                                    </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                     </div>
-                ) : (<></>)}
+                ) : null}
 
                 <div className="grid gap-3 mb-2">
                     <Label htmlFor="comment">Comment</Label>
@@ -96,11 +96,23 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
                 </div>
             </div>
 
-            <Button className="mt-3 ml-auto" onClick={() => submitResponse()} disabled={loading}>
-                Submit
-                { loading ? ( <Spinner className="text-primary-foreground" size="small" />) : (<></>) }
-            </Button>
+            <div className="flex gap-3 mt-3">
+                <Button onClick={() => submitResponse()} disabled={loading}>
+                    Submit
+                    {loading ? <Spinner className="text-primary-foreground" size="small" /> : null}
+                </Button>
+
+                {isUserAdmin() && (
+                    <Button
+                        variant="destructive"
+                        onClick={() => submitResponse("RANKED")}
+                        disabled={loading}
+                    >
+                        Set as Ranked
+                        {loading ? <Spinner className="text-primary-foreground" size="small" /> : null}
+                    </Button>
+                )}
+            </div>
         </>
     )
-
 }
