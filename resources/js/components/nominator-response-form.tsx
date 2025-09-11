@@ -47,6 +47,21 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
         })
     }
 
+    const submitRanked = () => {
+        setLoading(true);
+        router.post(route('submit-ranked'), {
+            'beatmap_id': beatmap.id
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success("Beatmap has been marked as Ranked.");
+            },
+            onFinish: () => {
+                setLoading(false);
+            }
+        })
+    }
+
     return (
         <>
             <h3 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5 mb-5">Edit my response:</h3>
@@ -95,11 +110,23 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
                     />
                 </div>
             </div>
+            <div className="flex gap-3 mt-3">
+                <Button onClick={() => submitResponse()} disabled={loading}>
+                    Submit
+                    {loading ? <Spinner className="text-primary-foreground" size="small" /> : null}
+                </Button>
 
-            <Button className="mt-3 ml-auto" onClick={() => submitResponse()} disabled={loading}>
-                Submit
-                { loading ? ( <Spinner className="text-primary-foreground" size="small" />) : (<></>) }
-            </Button>
+                {isUserAdmin() && (
+                    <Button
+                        variant="destructive"
+                        onClick={() => submitRanked()}
+                        disabled={loading}
+                    >
+                        Set as Ranked
+                        {loading ? <Spinner className="text-primary-foreground" size="small" /> : null}
+                    </Button>
+                )}
+            </div>
         </>
     )
 
