@@ -1,5 +1,5 @@
-import {Beatmap, BeatmapsFiltersInterface, type BreadcrumbItem, PaginatedData, Queue} from "@/types";
-import {Head, Link, useForm} from "@inertiajs/react";
+import {Beatmap, BeatmapsFiltersInterface, type BreadcrumbItem, PaginatedData, Queue, SharedData} from "@/types";
+import {Head, Link, useForm, usePage} from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import Markdown from "react-markdown";
 import React from "react";
@@ -26,6 +26,7 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
         },
     ];
 
+    const { auth } = usePage<SharedData>().props;
     const params = new URLSearchParams(window.location.search);
     const query_url = window.location.pathname;
 
@@ -182,7 +183,21 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                         </PopoverContent>
                     </Popover>
 
-                    {queue.type === 'subdivision' ? (<Button variant="outline" className="mr-2" asChild><Link href={route('queue.members', queue.id)}>View members</Link></Button>) : (<></>)}
+                    {auth.user && auth.user.id === queue.user_id ? (
+                        <>
+                            <Button variant="outline" className="mr-2">
+                                <Link href={route('edit-queue', queue.id)}>
+                                    Edit queue
+                                </Link>
+                            </Button>
+                            <Button variant="outline" className="mr-2">
+                                <Link href={route('manage-queue-members', queue.id)}>
+                                    Manage members
+                                </Link>
+                            </Button>
+                        </>
+                    ) : (<></>)}
+                    { queue.type === 'subdivision' ? (<Button variant="outline" className="mr-2" asChild><Link href={route('queue.members', queue.id)}>View members</Link></Button>) : (<></>) }
                     { queue.status != 'open' ? (<></>) : (<SubmitRequest queue={queue}/>) }
                 </div>
 
