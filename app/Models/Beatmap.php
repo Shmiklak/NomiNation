@@ -80,6 +80,7 @@ class Beatmap extends Model
     public function updateRanked() {
         $this->is_ranked = 1;
         $this->ranked_at = Carbon::now();
+        $this->status = 'RANKED';
         $this->save();
     }
 

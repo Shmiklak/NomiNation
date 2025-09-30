@@ -1,8 +1,8 @@
 import {Beatmap, BeatmapsFiltersInterface, type BreadcrumbItem, PaginatedData, Queue, SharedData} from "@/types";
-import {Head, Link, useForm, usePage} from "@inertiajs/react";
+import {Head, Link, router, useForm, usePage} from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import Markdown from "react-markdown";
-import React from "react";
+import React, {useState} from "react";
 import LinkRenderer from "@/components/link-renderer";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
 import {Button} from "@/components/ui/button";
@@ -13,6 +13,13 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import { Input } from "@/components/ui/input";
 import {Search} from "lucide-react";
 import {toast} from "sonner";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps: PaginatedData<Beatmap> }) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -30,6 +37,7 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
     const params = new URLSearchParams(window.location.search);
     const query_url = window.location.pathname;
 
+    const [loading, setLoading] = useState(false);
     const { data, setData, get } = useForm<BeatmapsFiltersInterface>({
         query: params.get("query") === null ? "" : params.get("query"),
         status: params.get("status") === null ? "Any" : params.get("status"),
@@ -37,12 +45,53 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
         language: params.get("language") === null ? "Any" : params.get("language")
     })
 
+    const isUserMember = auth.user
+        ? queue.members.some(member => member.id === auth.user.id)
+        : false;
+
     const applyFilters = () => {
-        console.log(data);
         get(query_url, {
             preserveState: true
         });
     };
+
+    const clearFilters = () => {
+        setData({
+            query: "",
+            status: "Any",
+            genre: "Any",
+            language: "Any"
+        });
+
+        window.location.search = '';
+
+        get(query_url, {
+            preserveState: true
+        });
+    };
+
+    const hasActiveFilters = window.location.search !== "";
+    const isPersonalQueue = queue.type === 'personal';
+
+    const clearBeatmaps = () => {
+        setLoading(true);
+        router.post(route('submit-multiple-response'), {
+            'queue_id': queue.id,
+            'user_id': auth.user.id,
+            'query': data.query,
+            'status': data.status,
+            'genre': data.genre,
+            'language': data.language,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success("Your response has been saved.");
+            },
+            onFinish: () => {
+                setLoading(false);
+            }
+        })
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -84,6 +133,39 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
 
                 <div className="flex justify-end">
 
+                    {hasActiveFilters && (
+                        <>
+                            {isPersonalQueue && isUserMember && (beatmaps.data?.length > 0) && (
+                                <Button
+                                    variant="outline"
+                                    className="mr-2"
+                                >
+                                    <AlertDialog>
+                                        <AlertDialogTrigger>Clear Beatmaps</AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Mark all beatmaps as uninterested?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This will mark all filtered beatmaps as uninterested. This action cannot be undone
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction onClick={clearBeatmaps}>Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </Button>
+                            )}
+                            <Button
+                                variant="outline"
+                                className="mr-2"
+                                onClick={clearFilters}
+                            >
+                                Clear Filters
+                            </Button>
+                        </>
+                    )}
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button className="mr-2" variant="outline">
@@ -117,6 +199,7 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                                             <SelectItem value="ACCEPTED">Accepted</SelectItem>
                                             <SelectItem value="NOMINATED">Nominated</SelectItem>
                                             <SelectItem value="HIDDEN">Hidden</SelectItem>
+                                            <SelectItem value="RANKED">Ranked</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>

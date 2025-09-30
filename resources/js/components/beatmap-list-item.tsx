@@ -40,6 +40,8 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
                 return "default";
             case "INVALID":
                 return "destructive";
+            case "RANKED":
+                return "ranked";
             default:
                 return "secondary";
         }
