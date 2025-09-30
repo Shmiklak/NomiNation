@@ -56,7 +56,6 @@ class NominatorController extends Controller
         $beatmaps = $query->get();
 
         foreach ($beatmaps as $beatmap) {
-            // hide only maps without response
             $response = NominatorResponse::where('nominator_id', $nominator_id)
                 ->where('request_id', $beatmap->id)
                 ->first();
@@ -72,9 +71,7 @@ class NominatorController extends Controller
 
             try {
                 Discord::sendResponseUpdate($response, $beatmap->queue->discord_webhook);
-            } catch (ValidationException $e) {
-
-            }
+            } catch (ValidationException $e) {}
 
             $beatmap->updateStatus();
         }

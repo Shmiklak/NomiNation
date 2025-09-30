@@ -85,7 +85,7 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
         }, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success("Your response has been saved.");
+                toast.success("Your response has been saved");
             },
             onFinish: () => {
                 setLoading(false);
@@ -132,21 +132,26 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                 </div>
 
                 <div className="flex justify-end">
-
-                    {hasActiveFilters && (
                         <>
-                            {isPersonalQueue && isUserMember && (beatmaps.data?.length > 0) && (
+                            {isPersonalQueue && isUserMember && (beatmaps.data && beatmaps.data?.length > 0) && (
                                 <Button
                                     variant="destructive"
                                     className="mr-2"
                                 >
                                     <AlertDialog>
-                                        <AlertDialogTrigger>Clear beatmaps</AlertDialogTrigger>
+                                        <AlertDialogTrigger>Clear requests</AlertDialogTrigger>
                                         <AlertDialogContent>
                                             <AlertDialogHeader>
-                                                <AlertDialogTitle>Mark all beatmaps as uninterested?</AlertDialogTitle>
+                                                <AlertDialogTitle>
+                                                    Mark all requests as uninterested?
+                                                </AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    This will mark all filtered beatmaps as uninterested
+                                                    <div>
+                                                        {hasActiveFilters
+                                                            ? "This will mark all filtered pending requests as uninterested"
+                                                            : "This will mark all pending requests as uninterested. Use filtering to make more precise marking"}
+                                                    </div>
+
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
@@ -157,15 +162,16 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                                     </AlertDialog>
                                 </Button>
                             )}
-                            <Button
-                                variant="outline"
-                                className="mr-2"
-                                onClick={clearFilters}
-                            >
-                                Clear filters
-                            </Button>
+                            {hasActiveFilters && (
+                                <Button
+                                    variant="outline"
+                                    className="mr-2"
+                                    onClick={clearFilters}
+                                >
+                                    Clear filters
+                                </Button>
+                            )}
                         </>
-                    )}
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button className="mr-2" variant="outline">
