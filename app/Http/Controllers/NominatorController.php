@@ -11,6 +11,24 @@ use Illuminate\Validation\ValidationException;
 
 class NominatorController extends Controller
 {
+    public function submitRanked(Request $request) {
+        $request->validate([
+            'beatmap_id' => 'required'
+        ]);
+
+        $nominator_id = $request->has('nominator_id') ? $request->get('nominator_id') : auth()->user()->id;
+        $beatmap = Beatmap::findOrFail($request->get('beatmap_id'));
+
+        if (!$beatmap->queue->members()->where('user_id', $nominator_id)->exists()) {
+            abort(403);
+        }
+
+        $beatmap->updateRanked();
+
+        redirect()->back();
+    }
+
+
     public function submitResponse(Request $request) {
         $request->validate([
             'beatmap_id' => 'required',

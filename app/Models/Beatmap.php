@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 
 class Beatmap extends Model
@@ -74,6 +75,12 @@ class Beatmap extends Model
         if ($this->status != $old_status) {
             $this->sendMessage();
         }
+    }
+
+    public function updateRanked() {
+        $this->is_ranked = 1;
+        $this->ranked_at = Carbon::now();
+        $this->save();
     }
 
     public function sendMessage() {

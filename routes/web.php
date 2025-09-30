@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('submit-request',[BeatmapsController::class, 'submitRequest'] )->name('submit-request');
     Route::post('submit-response', [NominatorController::class, 'submitResponse'] )->name('submit-response');
+    Route::post('submit-ranked', [NominatorController::class, 'submitRanked'] )->name('submit-ranked');
 
     Route::get('my-requests', [BeatmapsController::class, 'my_requests'])->name('my-requests');
     Route::get('my-responses', [BeatmapsController::class, 'my_responses'])->name('my-responses');
