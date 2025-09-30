@@ -137,16 +137,16 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                         <>
                             {isPersonalQueue && isUserMember && (beatmaps.data?.length > 0) && (
                                 <Button
-                                    variant="outline"
+                                    variant="destructive"
                                     className="mr-2"
                                 >
                                     <AlertDialog>
-                                        <AlertDialogTrigger>Clear Beatmaps</AlertDialogTrigger>
+                                        <AlertDialogTrigger>Clear beatmaps</AlertDialogTrigger>
                                         <AlertDialogContent>
                                             <AlertDialogHeader>
                                                 <AlertDialogTitle>Mark all beatmaps as uninterested?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    This will mark all filtered beatmaps as uninterested. This action cannot be undone
+                                                    This will mark all filtered beatmaps as uninterested
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
@@ -162,7 +162,7 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                                 className="mr-2"
                                 onClick={clearFilters}
                             >
-                                Clear Filters
+                                Clear filters
                             </Button>
                         </>
                     )}
