@@ -37,6 +37,7 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
         switch (beatmap.status) {
             case "ACCEPTED":
             case "NOMINATED":
+            case "MODDED":
                 return "default";
             case "INVALID":
                 return "destructive";

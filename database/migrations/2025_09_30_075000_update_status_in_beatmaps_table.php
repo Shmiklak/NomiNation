@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE beatmaps MODIFY status ENUM('PENDING', 'INVALID', 'ACCEPTED', 'NOMINATED', 'HIDDEN', 'RANKED') DEFAULT 'PENDING'");
+        DB::statement("ALTER TABLE beatmaps MODIFY status ENUM('PENDING', 'INVALID', 'ACCEPTED', 'NOMINATED', 'HIDDEN', 'RANKED', 'MODDED') DEFAULT 'PENDING'");
     }
 
     public function down(): void
