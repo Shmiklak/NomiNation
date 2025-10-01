@@ -95,4 +95,30 @@ class Discord {
         }
 //        }
     }
+
+    public static function sendRankedNotification($beatmap, $additional_webhook = null) {
+        $messageFactory = new MessageFactory();
+        $embedMessage = $messageFactory->create('embed');
+
+        $embedMessage->setTitle($beatmap->artist . " - " . $beatmap->title . " (mapped by " . $beatmap->creator . ")");
+        $embedMessage->setDescription("This beatmap has been marked as **RANKED** in " . $beatmap->queue->name);
+        $embedMessage->setUrl("https://osu.ppy.sh/beatmapsets/" . $beatmap->beatmapset_id);
+        $embedMessage->setColor(0xE610E5);
+
+        $embedMessage->setThumbnailUrl("https://assets.ppy.sh/beatmaps/" . $beatmap->beatmapset_id . "/covers/list.jpg");
+        $embedMessage->setAuthorName($beatmap->creator);
+        $embedMessage->setAuthorUrl("https://osu.ppy.sh/users/" . $beatmap->author->osu_id);
+        $embedMessage->setAuthorIcon("https://a.ppy.sh/" . $beatmap->author->osu_id);
+
+        $webhook = new DiscordWebhook($embedMessage);
+        $webhook->setWebhookUrl(config('discord.default_webhook_url'));
+        $webhook->send();
+
+        if (!is_null($additional_webhook)) {
+            $webhook = new DiscordWebhook($embedMessage);
+            $webhook->setWebhookUrl($additional_webhook);
+            $webhook->send();
+        }
+    }
+
 }

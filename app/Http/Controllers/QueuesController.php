@@ -141,22 +141,26 @@ class QueuesController extends Controller
         }
 
         $query = $queue->beatmaps()
-            ->where('is_ranked', false)
             ->orderBy('created_at', 'desc')
             ->with('responses')
             ->with('responses.nominator');
 
-        if ($request->filled('status') && $request->input('status') !== 'Any') {
-            $query->where('status', $request->input('status'));
+        if ($request->filled('status')) {
+            if ($request->input('status') === 'RANKED') {
+                $query->where('is_ranked', true);
+            } else if ($request->input('status') !== 'Any') {
+                $query->where('is_ranked', false);
+                $query->where('status', $request->input('status'));
+            }
         } else {
             if (auth()->check()) {
-                $query->whereNotIn('status', ['INVALID', 'HIDDEN'])
+                $query->whereNotIn('status', ['INVALID', 'HIDDEN', 'RANKED'])
                     ->whereDoesntHave('responses', function ($q) {
                         $q->where('nominator_id', auth()->id())
                             ->where('status', 'UNINTERESTED');
                     });
             } else {
-                $query->whereNotIn('status', ['INVALID', 'HIDDEN']);
+                $query->whereNotIn('status', ['INVALID', 'HIDDEN', 'RANKED']);
             }
         }
 

@@ -55,7 +55,8 @@ class Beatmap extends Model
         $old_status = $this->status;
 
         $nominated_responses = $this->responses()->where('status', 'NOMINATED')->count();
-        $accepted_responses = $this->responses()->whereIn('status',  ['ACCEPTED', 'MODDED', 'RECHECKED'])->count();
+        $accepted_responses = $this->responses()->whereIn('status',  ['ACCEPTED'])->count();
+        $modded_responses = $this->responses()->where('status',  'MODDED', 'RECHECKED')->count();
         $invalid_responses = $this->responses()->where('status',  'INVALID')->count();
         $uninterested_responses = $this->responses()->where('status',  'UNINTERESTED')->count();
 
@@ -63,6 +64,8 @@ class Beatmap extends Model
             $this->status = 'NOMINATED';
         } else if ($accepted_responses > 0) {
             $this->status = 'ACCEPTED';
+        } else if ($modded_responses > 0) {
+            $this->status = 'MODDED';
         } else if ($invalid_responses >= 1) {
             $this->status = 'INVALID';
         } else if ($uninterested_responses >= $this->queue->not_interested_requirement || ($this->queue->type == 'personal' && $uninterested_responses > 0)) {
@@ -80,6 +83,7 @@ class Beatmap extends Model
     public function updateRanked() {
         $this->is_ranked = 1;
         $this->ranked_at = Carbon::now();
+        $this->status = 'RANKED';
         $this->save();
     }
 
