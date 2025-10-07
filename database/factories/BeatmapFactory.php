@@ -13,7 +13,7 @@ class BeatmapFactory extends Factory
 
     public function definition(): array
     {
-        $statuses = ['PENDING', 'INVALID', 'ACCEPTED', 'NOMINATED', 'HIDDEN'];
+        $statuses = ['PENDING'];
 
         return [
             'queue_id' => '1',
