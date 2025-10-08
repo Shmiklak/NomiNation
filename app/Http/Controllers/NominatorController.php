@@ -45,6 +45,8 @@ class NominatorController extends Controller
 
         if ($request->filled('status') && $request['status'] !== 'Any') {
             $query->where('status', $request->input('status'));
+        } else {
+            $query->where('status', 'PENDING');
         }
         if ($request->filled('genre') && $request['genre'] !== 'Any') {
             $query->where('genre', $request->input('genre'));
