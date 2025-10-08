@@ -126,7 +126,7 @@ class Discord {
         $messageFactory = new MessageFactory();
         $embedMessage = $messageFactory->create('embed');
         $embedMessage->setTitle($queue->name . " has been cleared!");
-        $embedMessage->setDescription($queue->name . " all pending requests have been hidden.");
+        $embedMessage->setDescription("All pending requests have been hidden.");
         $embedMessage->setUrl(route('queue', $queue->id));
         $embedMessage->setColor(0x71EB34);
         $embedMessage->setThumbnailUrl(config('app.url') . $queue->image);
