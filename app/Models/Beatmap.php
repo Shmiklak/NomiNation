@@ -51,7 +51,7 @@ class Beatmap extends Model
         return $this->responses()->whereIn('status',  ['NOMINATED'])->count();
     }
 
-    public function updateStatus() {
+    public function updateStatus($send_message = true) {
         $old_status = $this->status;
 
         $nominated_responses = $this->responses()->where('status', 'NOMINATED')->count();
@@ -75,7 +75,7 @@ class Beatmap extends Model
         }
         $this->save();
 
-        if ($this->status != $old_status) {
+        if ($this->status != $old_status && $send_message) {
             $this->sendMessage();
         }
     }

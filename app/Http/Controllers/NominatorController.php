@@ -17,7 +17,6 @@ class NominatorController extends Controller
             'queue_id' => 'required',
             'user_id' => 'required',
             'query' => 'sometimes',
-            'status' => 'sometimes',
             'genre' => 'sometimes',
             'language' => 'sometimes',
         ]);
@@ -26,56 +25,41 @@ class NominatorController extends Controller
         $nominator_id = $request->get('user_id');
 
         $query = $queue->beatmaps()
-            ->orderBy('created_at', 'desc')
-            ->with('responses')
-            ->with('responses.nominator');
-
-        if ($request->filled('query')) {
-            $searchTerms = preg_split('/\s+/', trim($request->input('query')));
-            $query->where(function ($subQuery) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $subQuery->where(function ($q) use ($term) {
-                        $q->where('title', 'like', "%{$term}%")
+            ->with('queue')
+            ->orderByDesc('created_at')
+            ->where('status', 'PENDING')
+            ->when($request->filled('query'), function ($q) use ($request) {
+                $terms = preg_split('/\s+/', trim($request->query('query')));
+                $q->where(function ($sub) use ($terms) {
+                    foreach ($terms as $term) {
+                        $sub->where(function ($x) use ($term) {
+                            $x->where('title', 'like', "%{$term}%")
                             ->orWhere('artist', 'like', "%{$term}%")
                             ->orWhere('creator', 'like', "%{$term}%");
-                    });
-                }
-            });
-        }
+                        });
+                    }
+                });
+            })
+            ->when($request->filled('genre') && $request->genre !== 'Any',
+                fn($q) => $q->where('genre', $request->genre))
+            ->when($request->filled('language') && $request->language !== 'Any',
+                fn($q) => $q->where('language', $request->language));
 
-        if ($request->filled('status') && $request['status'] !== 'Any') {
-            $query->where('status', $request->input('status'));
-        } else {
-            $query->where('status', 'PENDING');
-        }
-        if ($request->filled('genre') && $request['genre'] !== 'Any') {
-            $query->where('genre', $request->input('genre'));
-        }
-        if ($request->filled('language') && $request['language'] !== 'Any') {
-            $query->where('language', $request->input('language'));
-        }
 
         $beatmaps = $query->get();
 
         foreach ($beatmaps as $beatmap) {
-            $response = NominatorResponse::where('nominator_id', $nominator_id)
-                ->where('request_id', $beatmap->id)
-                ->first();
-
-            if (!$response) {
-                $response = new NominatorResponse();
-                $response->request_id = $beatmap->id;
-                $response->nominator_id = $nominator_id;
-                $response->status = 'UNINTERESTED';
-            }
-
+            $response = new NominatorResponse();
+            $response->request_id = $beatmap->id;
+            $response->nominator_id = $nominator_id;
+            $response->status = 'UNINTERESTED';
             $response->save();
 
             try {
-                Discord::sendResponseUpdate($response, $beatmap->queue->discord_webhook);
+                Discord::sendResponseUpdate($response, $queue->discord_webhook);
             } catch (ValidationException $e) {}
 
-            $beatmap->updateStatus();
+            $beatmap->updateStatus(false);
         }
 
         return redirect()->back()->with('success', 'Responses updated for all filtered beatmaps.');
