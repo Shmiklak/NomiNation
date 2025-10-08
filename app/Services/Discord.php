@@ -121,4 +121,20 @@ class Discord {
         }
     }
 
+    public static function sendQueueCleared($queue) {
+        //        if (!config('app.debug')) {
+        $messageFactory = new MessageFactory();
+        $embedMessage = $messageFactory->create('embed');
+        $embedMessage->setTitle($queue->name . " has been cleared!");
+        $embedMessage->setDescription($queue->name . " all pending requests have been hidden.");
+        $embedMessage->setUrl(route('queue', $queue->id));
+        $embedMessage->setColor(0x71EB34);
+        $embedMessage->setThumbnailUrl(config('app.url') . $queue->image);
+
+        $webhook = new DiscordWebhook($embedMessage);
+        $webhook->setWebhookUrl(config('discord.default_webhook_url'));
+        $webhook->send();
+//        }
+    }
+
 }

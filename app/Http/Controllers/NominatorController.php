@@ -54,14 +54,10 @@ class NominatorController extends Controller
             $response->nominator_id = $nominator_id;
             $response->status = 'UNINTERESTED';
             $response->save();
-
-            try {
-                Discord::sendResponseUpdate($response, $queue->discord_webhook);
-            } catch (ValidationException $e) {}
-
             $beatmap->updateStatus(false);
         }
 
+        Discord::sendQueueCleared($queue);
         return redirect()->back()->with('success', 'Responses updated for all filtered beatmaps.');
     }
 
