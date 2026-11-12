@@ -16,6 +16,11 @@ class Beatmap extends Model
         'title', 'artist', 'creator', 'cover', 'genre', 'language', 'bpm', 'is_ranked'
     ];
 
+    protected $casts = [
+        'queue_id' => 'integer',
+        'request_author' => 'integer',
+    ];
+
     protected $appends = [
         'queue',
         'author',

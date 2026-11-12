@@ -26,7 +26,7 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
     const [comment, setComment] = useState<string>('');
     const isUserAdmin = () => {
 
-        return members.some(member => member.is_admin || (member.id === auth.user.id && member.pivot.is_admin === 1));
+        return members.some(member => member.is_admin || (member.id === auth.user.id && member.pivot.is_admin));
     }
 
     const submitResponse = () => {

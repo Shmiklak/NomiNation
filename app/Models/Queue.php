@@ -28,18 +28,27 @@ class Queue extends Model
         'reqs_per_user_per_month'
     ];
 
+    protected $casts = [
+        'user_id' => 'integer',
+        'not_interested_requirement' => 'integer',
+        'autoclose_amount' => 'integer',
+        'reqs_per_user_per_month' => 'integer',
+        'is_bn_queue' => 'boolean',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
 
     public function members()
     {
-        return $this->belongsToMany(User::class)->withPivot('is_admin', 'joined_at');
+        return $this->belongsToMany(User::class)->using(QueueMember::class)->withPivot('is_admin', 'joined_at');
     }
 
     public function admins()
     {
         return $this->belongsToMany(User::class)
+            ->using(QueueMember::class)
             ->withPivot('is_admin')
             ->wherePivot('is_admin', true);
     }
