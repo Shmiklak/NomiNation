@@ -61,6 +61,7 @@ class Beatmap extends Model
 
         $nominated_responses = $this->responses()->where('status', 'NOMINATED')->count();
         $accepted_responses = $this->responses()->whereIn('status',  ['ACCEPTED'])->count();
+        $compliant_responses = $this->responses()->where('status', 'COMPLIANT')->count();
         $modded_responses = $this->responses()->where('status',  'MODDED', 'RECHECKED')->count();
         $invalid_responses = $this->responses()->where('status',  'INVALID')->count();
         $uninterested_responses = $this->responses()->where('status',  'UNINTERESTED')->count();
@@ -69,6 +70,8 @@ class Beatmap extends Model
             $this->status = 'NOMINATED';
         } else if ($accepted_responses > 0) {
             $this->status = 'ACCEPTED';
+        } else if ($compliant_responses > 0) {
+            $this->status = 'COMPLIANT';
         } else if ($modded_responses > 0) {
             $this->status = 'MODDED';
         } else if ($invalid_responses >= 1) {

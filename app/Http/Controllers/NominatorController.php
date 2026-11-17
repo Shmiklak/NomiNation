@@ -151,6 +151,10 @@ class NominatorController extends Controller
             $username = str_replace(' ', '_', $beatmap->creator);
             $beatmap_title = str_replace("'", "\'", "{$beatmap->beatmapset_id} {$beatmap->artist} - {$beatmap->title}");
             Artisan::call("irc:send '{$username}' 'Hello! I am here to tell you that {$response->nominator->username} has accepted your [https://osu.ppy.sh/beatmapsets/{$beatmap_title}] beatmap on [https://nomination.shmiklak.uz NomiNation website] in {$beatmap->queue->name}. You can contact this nominator for details. Please note, this is an automated message.'" );
+        } else if ($request->get('status') === 'COMPLIANT') {
+            $username = str_replace(' ', '_', $beatmap->creator);
+            $beatmap_title = str_replace("'", "\'", "{$beatmap->beatmapset_id} {$beatmap->artist} - {$beatmap->title}");
+            Artisan::call("irc:send '{$username}' 'Hello! I am here to tell you that {$response->nominator->username} has marked your [https://osu.ppy.sh/beatmapsets/{$beatmap_title}] beatmap as compliant with the requirements of {$beatmap->queue->name} on [https://nomination.shmiklak.uz NomiNation website]. You can contact this nominator for details. Please note, this is an automated message.'" );
         }
 
         return redirect()->back();

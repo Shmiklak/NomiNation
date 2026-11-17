@@ -76,6 +76,7 @@ export default function NominatorResponseForm({ beatmap, members } : {beatmap : 
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="ACCEPTED">ACCEPTED</SelectItem>
+                            <SelectItem value="COMPLIANT">COMPLIANT</SelectItem>
                             <SelectItem value="MODDED">MODDED</SelectItem>
                             <SelectItem value="RECHECKED">RECHECKED</SelectItem>
                             <SelectItem value="NOMINATED">NOMINATED</SelectItem>

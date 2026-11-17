@@ -203,6 +203,7 @@ export default function ShowQueue({ queue, beatmaps } : { queue: Queue, beatmaps
                                             <SelectItem value="PENDING">Pending</SelectItem>
                                             <SelectItem value="INVALID">Invalid</SelectItem>
                                             <SelectItem value="ACCEPTED">Accepted</SelectItem>
+                                            <SelectItem value="COMPLIANT">Compliant</SelectItem>
                                             <SelectItem value="NOMINATED">Nominated</SelectItem>
                                             <SelectItem value="HIDDEN">Hidden</SelectItem>
                                             <SelectItem value="RANKED">Ranked</SelectItem>

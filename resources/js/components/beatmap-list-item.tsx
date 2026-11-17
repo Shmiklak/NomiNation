@@ -36,6 +36,7 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
     const matchingBadgeColor = () => {
         switch (beatmap.status) {
             case "ACCEPTED":
+            case "COMPLIANT":
             case "NOMINATED":
             case "MODDED":
                 return "default";
@@ -131,6 +132,9 @@ export default function BeatmapListItem({ beatmap, members, display_queue = fals
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer" onClick={() => updateNominatorResponse('ACCEPTED')}>
                                     Mark as accepted
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" onClick={() => updateNominatorResponse('COMPLIANT')}>
+                                    Mark as compliant
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer" onClick={() => updateNominatorResponse('INVALID')}>
                                     Mark as invalid

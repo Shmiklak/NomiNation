@@ -33,6 +33,7 @@ export default function BeatmapWindow({ beatmap, members } : {beatmap : Beatmap,
     const matchingBadgeColor = () => {
         switch (beatmap.status) {
             case "ACCEPTED":
+            case "COMPLIANT":
             case "NOMINATED":
                 return "default";
             case "INVALID":

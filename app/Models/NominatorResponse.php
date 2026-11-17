@@ -25,6 +25,8 @@ class NominatorResponse extends Model
         switch ($this->status) {
             case "ACCEPTED":
                 return 0x00ff00;
+            case "COMPLIANT":
+                return 0x84CC16;
             case "INVALID":
                 return 0xA80A0A;
             case "MODDED":
